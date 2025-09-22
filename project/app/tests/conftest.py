@@ -1,15 +1,25 @@
+import asyncio
 import json
-
+import requests
 import pytest
 from fastapi import FastAPI
+from pydantic import EmailStr
 from requests.models import Response
 from starlette.testclient import TestClient
 from tortoise.contrib.fastapi import register_tortoise
 
 from app.app_config import AppSettings, get_application_settings
 from app.main import create_app
+from app.modules.database_module.scripts.init_db import generate_schema
 from app.modules.database_module.settings import module_settings
-
+from app.schemas.auth_schema import LoginSchema
+from app.services.auth_service.auth_service import AuthService
+from app.tests.constants import Credentials
+from app.modules.database_module.scripts.test_init_fixtures import (
+    create_tasks_by_board_view,
+    delete_database,
+)
+import anyio
 
 class TestAPP:
 
@@ -24,7 +34,7 @@ class TestAPP:
         self.tokens = {}
 
     def do_request(
-        self, http_method: str, endpoint: str, headers: dict = None, data: dict = None
+            self, http_method: str, endpoint: str, headers: dict = None, data: dict = None
     ) -> Response:
         """
         Make a request to the app and return response
@@ -43,34 +53,59 @@ class TestAPP:
             data=json.dumps(data) if data else None,
         )
 
+    async def get_token_for_user(self, email: str, password: str) -> str:
+        login_data = LoginSchema(email=email, password=password)
+        auth_response = await AuthService.login(login_data)
+        return auth_response.access_token
+
+    async def get_token_for_role(self, role: str) -> str:
+        if role in self.tokens:
+            return self.tokens[role]
+
+        email = Credentials.CREDENTIALS[role]["email"]
+        password = Credentials.CREDENTIALS[role]["password"]
+        token = await self.get_token_for_user(email, password)
+        self.tokens[role] = token
+        return token
+
     def do_request_with_role(
-        self,
-        role: str,
-        http_method: str,
-        endpoint: str,
-        headers: dict = None,
-        data: dict = None,
+            self,
+            role: str,
+            http_method: str,
+            endpoint: str,
+            headers: dict = None,
+            data: dict = None,
     ) -> Response:
-        """
-        Make a request to the app with specific role and return response
-        :param role: role to login and make the request
-        :param http_method: http method (get/post/put/delete)
-        :param endpoint: endpoint to call
-        :param headers: headers of the request
-        :param data: data of the request
-        :return: response from the server
-        :rtype: Response
-        """
-
-        # Get token from role
-        token = self.get_token_for_role(role)
-
+        token = anyio.run(self.get_token_for_role, role)
         return self.do_request(
             http_method,
             endpoint,
             headers={**{"Authorization": f"Bearer {token}"}, **(headers or {})},
             data=data,
         )
+
+
+def setup_script():
+    """Script to run before all tests."""
+    print("Running setup script before all tests...")
+    delete_database()
+    asyncio.run(generate_schema())
+    asyncio.run(create_tasks_by_board_view())
+
+def teardown_script():
+    """Script to run after all tests."""
+    print("Running teardown script after all tests...")
+
+@pytest.fixture(scope="session", autouse=True)
+def setup_and_teardown():
+    # Setup: Run before any tests
+    setup_script()
+
+    # Yield to run the tests
+    yield
+
+    # Teardown: Run after all tests
+    teardown_script()
 
 
 @pytest.fixture(scope="session")
@@ -92,10 +127,10 @@ def test_app() -> TestAPP:
     with TestClient(test_app) as test_client:
         yield TestAPP(test_client, f"/api/v{test_app_config.api_version}")
 
-
 def pytest_collection_modifyitems(items):
     order = {
-        "primer_tests.py": 0,
+        "test_auth.py": 0,
+        "test_user.py": 0,
     }
 
     def sort_key(item):

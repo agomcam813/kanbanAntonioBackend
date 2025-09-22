@@ -66,6 +66,7 @@ migrations/
 # Variables de entorno
 project/.env
 project/.env.development
+project/.tests_env
 
 # ===============================
 # IDEs / Editores
