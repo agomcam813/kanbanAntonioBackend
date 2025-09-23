@@ -10,6 +10,7 @@ from tortoise.contrib.fastapi import register_tortoise
 
 from app.app_config import AppSettings, get_application_settings
 from app.main import create_app
+from app.modules.database_module.models.default import Workspace
 from app.modules.database_module.scripts.init_db import generate_schema
 from app.modules.database_module.settings import module_settings
 from app.schemas.auth_schema import LoginSchema
@@ -33,6 +34,7 @@ class TestAPP:
 
         # Init empty variables
         self.tokens = {}
+        self.workspace_1 = Workspace()
 
     def do_request(
             self, http_method: str, endpoint: str, headers: dict = None, data: dict = None
@@ -170,6 +172,6 @@ def pytest_collection_modifyitems(items):
 
 order = {
     "test_auth.py": 0,
-    "test_board.py": 1,
-    "test_user.py": 2,
+    "test_workspace.py": 1,
+    "test_user.py": 6,
 }

@@ -1,12 +1,21 @@
 from app.schemas.auth_schema import RegisterSchema, LoginSchema
-from app.tests.constants import ApiServices, RegisterUser1
+from app.tests.constants import ApiServices, RegisterUser1, RegisterUser2
 import pytest
 
 
 @pytest.mark.usefixtures("test_app")
 class TestAuth:
-    def test_register_success(self, test_app):
+    def test_register_1_success(self, test_app):
         register_schema = RegisterSchema(**RegisterUser1.__dict__)
+        response = test_app.do_request(
+            "POST",
+            ApiServices.APP_REGISTER,
+            data=register_schema.model_dump(),
+        )
+        assert response.status_code == 200
+
+    def test_register_2_success(self, test_app):
+        register_schema = RegisterSchema(**RegisterUser2.__dict__)
         response = test_app.do_request(
             "POST",
             ApiServices.APP_REGISTER,

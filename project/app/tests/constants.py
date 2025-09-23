@@ -6,6 +6,7 @@ email_random_2 = f"{str(uuid.uuid4()).lower()}@gmail.com"
 
 password_random_1 = f"{uuid.uuid4()}A?"
 
+
 class ApiServices:
     # AUTH
     APP_REGISTER: Final[str] = "/auth/register"
@@ -17,10 +18,10 @@ class ApiServices:
     APP_GET_ME_USER: Final[str] = "/users/me"
 
     # WORKSPACE
-    APP_WORKSPACES: Final[str] = "/workspaces"
-    APP_WORKSPACE: Final[str] = "/workspaces/{workspace_id}"
-    APP_WORKSPACE_USERS: Final[str] = "/workspaces/{workspace_id}/users"
-    APP_WORKSPACE_USER: Final[str] = "/workspaces/{workspace_id}/users/{user_id}"
+    APP_WORKSPACE: Final[str] = "/workspaces"
+    APP_WORKSPACE_ME: Final[str] = "/workspaces/all-me"
+    APP_WORKSPACE_MEMBERS: Final[str] = "/workspaces/{workspace_id}/members"
+    APP_WORKSPACE_INVITE_MEMBERS: Final[str] = "/workspaces/invite"
 
     # BOARD
     APP_BOARDS: Final[str] = "/workspaces/{workspace_id}/boards"
@@ -58,14 +59,24 @@ class Credentials:
             "email": email_random_1,
             "password": password_random_1,
         },
+        "USER_2": {
+            "email": email_random_2,
+            "password": password_random_1,
+        },
     }
 
 
 class RegisterUser1:
-    email: Final[str] = email_random_1
-    password: Final[str] = password_random_1
-    name: Final[str] = "USER"
-    surname: Final[str] = "1"
+    email: str = email_random_1
+    password: str = password_random_1
+    name: str = "USER"
+    surname: str = "1"
+
+class RegisterUser2:
+    email: str = email_random_2
+    password: str = password_random_1
+    name: str = "USER"
+    surname: str = "1"
 
 
 class UpdateUser1:
@@ -73,31 +84,10 @@ class UpdateUser1:
     surname: str = "Surname change"
 
 
-class TestWorkspace:
-    name: Final[str] = "Test Workspace"
-    description: Final[str] = "A workspace for testing purposes"
-    updated_name: Final[str] = "Updated Test Workspace"
-    updated_description: Final[str] = "Updated workspace description"
+class TestWorkspace1:
+    name: str = "Test Workspace"
 
 
-class Board1:
-    name: Final[str] = "Test Board"
-    description: Final[str] = "A board for testing purposes"
-    updated_name: Final[str] = "Updated Test Board"
-    updated_description: Final[str] = "Updated board description"
-
-
-class TestColumn:
-    name: Final[str] = "Test Column"
-    order: Final[int] = 1
-    updated_name: Final[str] = "Updated Test Column"
-    updated_order: Final[int] = 2
-
-
-class TestTask:
-    title: Final[str] = "Test Task"
-    description: Final[str] = "A task for testing purposes"
-    order: Final[int] = 1
-    updated_title: Final[str] = "Updated Test Task"
-    updated_description: Final[str] = "Updated task description"
-    updated_order: Final[int] = 2
+class WorkspaceInvitation:
+    workspace_id: int = 1
+    invited_user_email: str = email_random_2
