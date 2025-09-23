@@ -1,5 +1,10 @@
+import uuid
 from typing import Final
 
+email_random_1 = f"{str(uuid.uuid4()).lower()}@gmail.com"
+email_random_2 = f"{str(uuid.uuid4()).lower()}@gmail.com"
+
+password_random_1 = f"{uuid.uuid4()}A?"
 
 class ApiServices:
     # AUTH
@@ -50,15 +55,15 @@ class ApiServices:
 class Credentials:
     CREDENTIALS: Final[dict[str, dict[str, str]]] = {
         "USER_1": {
-            "email": "testsejemploemail1233215645@gmail.com",
-            "password": "Usuario0?",
+            "email": email_random_1,
+            "password": password_random_1,
         },
     }
 
 
 class RegisterUser1:
-    email: Final[str] = "testsejemploemail1233215645@gmail.com"
-    password: Final[str] = "Usuario0?"
+    email: Final[str] = email_random_1
+    password: Final[str] = password_random_1
     name: Final[str] = "USER"
     surname: Final[str] = "1"
 
