@@ -23,6 +23,7 @@ class ApiServices:
     APP_WORKSPACE_MEMBERS: str = "/workspaces/{workspace_id}/members"
     APP_WORKSPACE_INVITE_MEMBERS: str = "/workspaces/invite"
     APP_WORKSPACE_REMOVE_INVITE_MEMBERS: str = "/workspaces/remove-member"
+    APP_WORKSPACE_REMOVE: str = "/workspaces/remove-workspace/{workspace_id}"
 
     # BOARD
     APP_BOARDS: str = "/workspaces/{workspace_id}/boards"
@@ -75,7 +76,7 @@ class RegisterUser2:
     email: str = email_random_2
     password: str = password_random_1
     name: str = "USER"
-    surname: str = "1"
+    surname: str = "2"
 
 
 class UpdateUser1:
@@ -95,3 +96,8 @@ class WorkspaceInvitation:
 class WorkspaceRemoveInvitation:
     workspace_id: int = 1
     user_email_to_remove: str = email_random_2
+
+
+class WorkspaceRemoveInvitationOwner:
+    workspace_id: int = 1
+    user_email_to_remove: str = email_random_1

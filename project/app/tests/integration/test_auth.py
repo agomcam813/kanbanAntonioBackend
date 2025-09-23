@@ -33,7 +33,7 @@ class TestAuth:
         )
         assert response.status_code == 500
 
-    def test_login_success(self, test_app):
+    def test_login_1_success(self, test_app):
         login_schema = LoginSchema(
             email=RegisterUser1.email, password=RegisterUser1.password
         )
@@ -45,5 +45,20 @@ class TestAuth:
 
         if response.status_code == 200:
             test_app.tokens[f"{RegisterUser1.name}_{RegisterUser1.surname}"] = (
+                response.json().get("access_token")
+            )
+
+    def test_login_2_success(self, test_app):
+        login_schema = LoginSchema(
+            email=RegisterUser2.email, password=RegisterUser1.password
+        )
+        response = test_app.do_request(
+            "POST",
+            ApiServices.APP_LOGIN,
+            data=login_schema.model_dump(),
+        )
+
+        if response.status_code == 200:
+            test_app.tokens[f"{RegisterUser2.name}_{RegisterUser2.surname}"] = (
                 response.json().get("access_token")
             )
