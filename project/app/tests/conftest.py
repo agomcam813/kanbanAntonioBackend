@@ -1,9 +1,8 @@
 import asyncio
 import json
-import requests
+
 import pytest
 from fastapi import FastAPI
-from pydantic import EmailStr
 from requests.models import Response
 from starlette.testclient import TestClient
 from tortoise.contrib.fastapi import register_tortoise
@@ -12,15 +11,13 @@ from app.app_config import AppSettings, get_application_settings
 from app.main import create_app
 from app.modules.database_module.models.default import Workspace
 from app.modules.database_module.scripts.init_db import generate_schema
-from app.modules.database_module.settings import module_settings
-from app.schemas.auth_schema import LoginSchema
-from app.services.auth_service.auth_service import AuthService
-from app.tests.constants import Credentials, ApiServices
 from app.modules.database_module.scripts.test_init_fixtures import (
     create_tasks_by_board_view,
     delete_database,
 )
-import anyio
+from app.modules.database_module.settings import module_settings
+from app.schemas.auth_schema import LoginSchema
+from app.tests.constants import ApiServices, Credentials
 
 
 class TestAPP:
@@ -37,7 +34,7 @@ class TestAPP:
         self.workspace_1 = Workspace()
 
     def do_request(
-            self, http_method: str, endpoint: str, headers: dict = None, data: dict = None
+        self, http_method: str, endpoint: str, headers: dict = None, data: dict = None
     ) -> Response:
         """
         Make a request to the app and return response
@@ -87,12 +84,12 @@ class TestAPP:
         return token
 
     def do_request_with_role(
-            self,
-            role: str,
-            http_method: str,
-            endpoint: str,
-            headers: dict = None,
-            data: dict = None,
+        self,
+        role: str,
+        http_method: str,
+        endpoint: str,
+        headers: dict = None,
+        data: dict = None,
     ) -> Response:
         """
         Make a request to the app with specific role and return response

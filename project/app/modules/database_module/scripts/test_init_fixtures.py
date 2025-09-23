@@ -11,11 +11,14 @@ load_dotenv()
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 def delete_database() -> None:
     """Delete file from database."""
     logger.info("Clearing database tables...")
     FILE_DATABASE_PATH = (
-        Path(__file__).resolve().parent.parent.parent.parent / "tests" / "kanbanAntonio.db"
+        Path(__file__).resolve().parent.parent.parent.parent
+        / "tests"
+        / "kanbanAntonio.db"
     )
 
     if FILE_DATABASE_PATH.exists():
@@ -23,6 +26,7 @@ def delete_database() -> None:
         logger.info("Database file deleted.")
     else:
         logger.error("File not found")
+
 
 async def create_tasks_by_board_view():
     """

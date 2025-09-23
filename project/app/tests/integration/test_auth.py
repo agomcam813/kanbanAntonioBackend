@@ -1,6 +1,7 @@
-from app.schemas.auth_schema import RegisterSchema, LoginSchema
-from app.tests.constants import ApiServices, RegisterUser1, RegisterUser2
 import pytest
+
+from app.schemas.auth_schema import LoginSchema, RegisterSchema
+from app.tests.constants import ApiServices, RegisterUser1, RegisterUser2
 
 
 @pytest.mark.usefixtures("test_app")
@@ -33,7 +34,9 @@ class TestAuth:
         assert response.status_code == 500
 
     def test_login_success(self, test_app):
-        login_schema = LoginSchema(email=RegisterUser1.email, password=RegisterUser1.password)
+        login_schema = LoginSchema(
+            email=RegisterUser1.email, password=RegisterUser1.password
+        )
         response = test_app.do_request(
             "POST",
             ApiServices.APP_LOGIN,
@@ -41,4 +44,6 @@ class TestAuth:
         )
 
         if response.status_code == 200:
-            test_app.tokens[f"{RegisterUser1.name}_{RegisterUser1.surname}"] = response.json().get("access_token")
+            test_app.tokens[f"{RegisterUser1.name}_{RegisterUser1.surname}"] = (
+                response.json().get("access_token")
+            )

@@ -9,45 +9,43 @@ password_random_1 = f"{uuid.uuid4()}A?"
 
 class ApiServices:
     # AUTH
-    APP_REGISTER: Final[str] = "/auth/register"
-    APP_LOGIN: Final[str] = "/auth/login"
+    APP_REGISTER: str = "/auth/register"
+    APP_LOGIN: str = "/auth/login"
 
     # USER
-    APP_DELETE_ME_USER: Final[str] = "/users/me"
-    APP_UPDATE_ME_USER: Final[str] = "/users/me"
-    APP_GET_ME_USER: Final[str] = "/users/me"
+    APP_DELETE_ME_USER: str = "/users/me"
+    APP_UPDATE_ME_USER: str = "/users/me"
+    APP_GET_ME_USER: str = "/users/me"
 
     # WORKSPACE
-    APP_WORKSPACE: Final[str] = "/workspaces"
-    APP_WORKSPACE_ME: Final[str] = "/workspaces/all-me"
-    APP_WORKSPACE_MEMBERS: Final[str] = "/workspaces/{workspace_id}/members"
-    APP_WORKSPACE_INVITE_MEMBERS: Final[str] = "/workspaces/invite"
+    APP_WORKSPACE: str = "/workspaces"
+    APP_WORKSPACE_ME: str = "/workspaces/all-me"
+    APP_WORKSPACE_MEMBERS: str = "/workspaces/{workspace_id}/members"
+    APP_WORKSPACE_INVITE_MEMBERS: str = "/workspaces/invite"
+    APP_WORKSPACE_REMOVE_INVITE_MEMBERS: str = "/workspaces/remove-member"
 
     # BOARD
-    APP_BOARDS: Final[str] = "/workspaces/{workspace_id}/boards"
-    APP_BOARD: Final[str] = "/workspaces/{workspace_id}/boards/{board_id}"
-    APP_BOARD_USERS: Final[str] = "/workspaces/{workspace_id}/boards/{board_id}/users"
-    APP_BOARD_USER: Final[str] = (
-        "/workspaces/{workspace_id}/boards/{board_id}/users/{user_id}"
-    )
+    APP_BOARDS: str = "/workspaces/{workspace_id}/boards"
+    APP_BOARD: str = "/workspaces/{workspace_id}/boards/{board_id}"
+    APP_BOARD_USERS: str = "/workspaces/{workspace_id}/boards/{board_id}/users"
+    APP_BOARD_USER: str = "/workspaces/{workspace_id}/boards/{board_id}/users/{user_id}"
 
     # COLUMN
-    APP_COLUMNS: Final[str] = "/workspaces/{workspace_id}/boards/{board_id}/columns"
-    APP_COLUMN: Final[str] = (
-        "/workspaces/{workspace_id}/boards/{board_id}/columns/{column_id}"
-    )
-    APP_COLUMN_REORDER: Final[str] = (
+    APP_COLUMNS: str = "/workspaces/{workspace_id}/boards/{board_id}/columns"
+    APP_COLUMN: str = "/workspaces/{workspace_id}/boards/{board_id}/columns/{column_id}"
+    APP_COLUMN_REORDER: str = (
         "/workspaces/{workspace_id}/boards/{board_id}/columns/reorder"
     )
 
     # TASK
-    APP_TASKS: Final[str] = (
+    APP_TASKS: str = (
         "/workspaces/{workspace_id}/boards/{board_id}/columns/{column_id}/tasks"
     )
-    APP_TASK: Final[str] = (
-        "/workspaces/{workspace_id}/boards/{board_id}/columns/{column_id}/tasks/{task_id}"
+    APP_TASK: str = (
+        "/workspaces/{workspace_id}/boards/{board_id}/columns/{column_id}"
+        "/tasks/{task_id}"
     )
-    APP_TASK_MOVE: Final[str] = (
+    APP_TASK_MOVE: str = (
         "/workspaces/{workspace_id}/boards/{board_id}/columns/{column_id}/"
         "tasks/{task_id}/move"
     )
@@ -72,6 +70,7 @@ class RegisterUser1:
     name: str = "USER"
     surname: str = "1"
 
+
 class RegisterUser2:
     email: str = email_random_2
     password: str = password_random_1
@@ -91,3 +90,8 @@ class TestWorkspace1:
 class WorkspaceInvitation:
     workspace_id: int = 1
     invited_user_email: str = email_random_2
+
+
+class WorkspaceRemoveInvitation:
+    workspace_id: int = 1
+    user_email_to_remove: str = email_random_2

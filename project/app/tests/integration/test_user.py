@@ -1,7 +1,7 @@
 import pytest
 
 from app.schemas.user_schema import UserUpdateSchema
-from app.tests.constants import ApiServices, UpdateUser1, RegisterUser1
+from app.tests.constants import ApiServices, RegisterUser1, UpdateUser1
 
 
 @pytest.mark.usefixtures("test_app")
@@ -9,9 +9,7 @@ class TestUser:
 
     def test_get_me_successfully(self, test_app):
         response = test_app.do_request_with_role(
-            "USER_1",
-            "GET",
-            ApiServices.APP_GET_ME_USER
+            "USER_1", "GET", ApiServices.APP_GET_ME_USER
         )
 
         assert response.status_code == 200
@@ -22,7 +20,7 @@ class TestUser:
             "USER_1",
             "PUT",
             ApiServices.APP_UPDATE_ME_USER,
-            data=update_schema.model_dump()
+            data=update_schema.model_dump(),
         )
         assert response.status_code == 200
         assert response.json()["name"] != RegisterUser1.name
