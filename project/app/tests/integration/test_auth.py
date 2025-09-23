@@ -12,7 +12,6 @@ class TestAuth:
             ApiServices.APP_REGISTER,
             data=register_schema.model_dump(),
         )
-        test_app.tokens[f"{RegisterUser1.name}_{RegisterUser1.surname}"] = response.json().get("access_token")
         assert response.status_code == 200
 
     def test_register_failure(self, test_app):

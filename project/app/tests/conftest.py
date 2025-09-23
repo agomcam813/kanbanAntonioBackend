@@ -160,14 +160,16 @@ def test_app() -> TestAPP:
 
 
 def pytest_collection_modifyitems(items):
-    order = {
-        "test_auth.py": 0,
-        "test_user.py": 0,
-    }
-
     def sort_key(item):
         filename = item.nodeid.split("::")[0].replace("\\", "/")
         shortname = filename.split("integration/")[-1]
         return order.get(shortname, 999)
 
     items.sort(key=sort_key)
+
+
+order = {
+    "test_auth.py": 0,
+    "test_board.py": 1,
+    "test_user.py": 2,
+}
