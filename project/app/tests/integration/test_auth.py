@@ -1,4 +1,4 @@
-from app.schemas.auth_schema import RegisterSchema
+from app.schemas.auth_schema import RegisterSchema, LoginSchema
 from app.tests.constants import ApiServices, RegisterUser1
 import pytest
 
@@ -12,7 +12,7 @@ class TestAuth:
             ApiServices.APP_REGISTER,
             data=register_schema.model_dump(),
         )
-        print(response.text)
+        test_app.tokens[f"{RegisterUser1.name}_{RegisterUser1.surname}"] = response.json().get("access_token")
         assert response.status_code == 200
 
     def test_register_failure(self, test_app):
@@ -22,6 +22,15 @@ class TestAuth:
             ApiServices.APP_REGISTER,
             data=register_schema.model_dump(),
         )
-        print(response.text)
         assert response.status_code == 500
-        
+
+    def test_login_success(self, test_app):
+        login_schema = LoginSchema(email=RegisterUser1.email, password=RegisterUser1.password)
+        response = test_app.do_request(
+            "POST",
+            ApiServices.APP_LOGIN,
+            data=login_schema.model_dump(),
+        )
+
+        if response.status_code == 200:
+            test_app.tokens[f"{RegisterUser1.name}_{RegisterUser1.surname}"] = response.json().get("access_token")

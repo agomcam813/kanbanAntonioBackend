@@ -14,12 +14,13 @@ from app.modules.database_module.scripts.init_db import generate_schema
 from app.modules.database_module.settings import module_settings
 from app.schemas.auth_schema import LoginSchema
 from app.services.auth_service.auth_service import AuthService
-from app.tests.constants import Credentials
+from app.tests.constants import Credentials, ApiServices
 from app.modules.database_module.scripts.test_init_fixtures import (
     create_tasks_by_board_view,
     delete_database,
 )
 import anyio
+
 
 class TestAPP:
 
@@ -53,18 +54,33 @@ class TestAPP:
             data=json.dumps(data) if data else None,
         )
 
-    async def get_token_for_user(self, email: str, password: str) -> str:
+    def get_token_for_user(self, email: str, password: str) -> str:
         login_data = LoginSchema(email=email, password=password)
-        auth_response = await AuthService.login(login_data)
-        return auth_response.access_token
+        auth_response = self.do_request(
+            "POST",
+            ApiServices.APP_LOGIN,
+            data=login_data.model_dump(),
+        )
 
-    async def get_token_for_role(self, role: str) -> str:
+        if auth_response.status_code != 200:
+            raise Exception(f"Login error: {auth_response.text}")
+        return auth_response.json().get("access_token")
+
+    def get_token_for_role(self, role: str) -> str:
+        """
+        Firebase login to get token for a specific role
+        :param role: Rol como string
+        :return: Firebase token
+        """
         if role in self.tokens:
             return self.tokens[role]
 
+        if role not in Credentials.CREDENTIALS:
+            raise ValueError(f"Role {role} no tiene credenciales configuradas")
+
         email = Credentials.CREDENTIALS[role]["email"]
         password = Credentials.CREDENTIALS[role]["password"]
-        token = await self.get_token_for_user(email, password)
+        token = self.get_token_for_user(email, password)
         self.tokens[role] = token
         return token
 
@@ -76,7 +92,20 @@ class TestAPP:
             headers: dict = None,
             data: dict = None,
     ) -> Response:
-        token = anyio.run(self.get_token_for_role, role)
+        """
+        Make a request to the app with specific role and return response
+        :param role: role to login and make the request
+        :param http_method: http method (get/post/put/delete)
+        :param endpoint: endpoint to call
+        :param headers: headers of the request
+        :param data: data of the request
+        :return: response from the server
+        :rtype: Response
+        """
+
+        # Get token from role
+        token = self.get_token_for_role(role)
+
         return self.do_request(
             http_method,
             endpoint,
@@ -92,9 +121,11 @@ def setup_script():
     asyncio.run(generate_schema())
     asyncio.run(create_tasks_by_board_view())
 
+
 def teardown_script():
     """Script to run after all tests."""
     print("Running teardown script after all tests...")
+
 
 @pytest.fixture(scope="session", autouse=True)
 def setup_and_teardown():
@@ -126,6 +157,7 @@ def test_app() -> TestAPP:
 
     with TestClient(test_app) as test_client:
         yield TestAPP(test_client, f"/api/v{test_app_config.api_version}")
+
 
 def pytest_collection_modifyitems(items):
     order = {
