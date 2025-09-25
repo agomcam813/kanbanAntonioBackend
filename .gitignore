@@ -64,7 +64,7 @@ migrations/
 # Configuración y secretos
 # ===============================
 # Variables de entorno
-project/.env
+.env
 project/.env.development
 project/.tests_env
 

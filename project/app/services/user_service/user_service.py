@@ -52,9 +52,7 @@ class UserService:
         if not user:
             raise UserServiceException(UserServiceExceptionInfo.USER_NOT_FOUND)
 
-
         await AuthRepository.delete_all_sessions(user.id)
-
 
         supabase = await get_supabase_admin()
         try:
@@ -63,7 +61,6 @@ class UserService:
             raise UserServiceException(
                 UserServiceExceptionInfo.ERROR_DELETING_USER_SUPABASE
             )
-
 
         deleted_user = await UserRepository.delete_user(user.id)
         if not deleted_user:
