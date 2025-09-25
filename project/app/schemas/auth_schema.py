@@ -51,4 +51,3 @@ class AuthResponseSchema(BaseModel):
     access_token: str
     refresh_token: str
     user_id: int
-    email: EmailStr

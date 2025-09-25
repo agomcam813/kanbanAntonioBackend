@@ -26,4 +26,4 @@ RUN pip install -r requirements.txt
 COPY . .
 
 # Run gunicorn
-CMD gunicorn --bind 0.0.0.0:$PORT app.main:app -k uvicorn.workers.UvicornWorker
+CMD ["sh", "-c", "python app/modules/database_module/scripts/init_db.py && python app/modules/database_module/scripts/init_fixtures.py && gunicorn --bind 0.0.0.0:$PORT app.main:app -k uvicorn.workers.UvicornWorker"]

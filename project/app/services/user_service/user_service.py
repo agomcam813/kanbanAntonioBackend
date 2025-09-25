@@ -47,7 +47,9 @@ class UserService:
         return UserOutputSchema(**user.__dict__)
 
     @staticmethod
-    async def delete_user(sub: str, email: str) -> UserOutputSchema:
+    async def delete_user(
+        sub: str, email: str, user_agent: str | None = None
+    ) -> UserOutputSchema:
         """
         Deletes a user safely:
         1. Remove all associated sessions
