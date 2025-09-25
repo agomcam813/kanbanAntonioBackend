@@ -1,6 +1,7 @@
 import asyncio
 import json
 
+import fakeredis
 import pytest
 from fastapi import FastAPI
 from requests.models import Response
@@ -8,6 +9,7 @@ from starlette.testclient import TestClient
 from tortoise.contrib.fastapi import register_tortoise
 
 from app.app_config import AppSettings, get_application_settings
+from app.core.redis import redis_client
 from app.main import create_app
 from app.modules.database_module.models.default import Workspace
 from app.modules.database_module.scripts.init_db import generate_schema
@@ -136,6 +138,7 @@ def setup_and_teardown():
 
     # Teardown: Run after all tests
     teardown_script()
+
 
 
 @pytest.fixture(scope="session")

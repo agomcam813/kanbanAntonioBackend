@@ -25,5 +25,9 @@ RUN pip install -r requirements.txt
 # Add application
 COPY . .
 
-# Run gunicorn
+COPY ./wait-for-postgres-redis.sh /usr/src/wait-for-services.sh
+RUN chmod +x /usr/src/wait-for-services.sh
+
+ENTRYPOINT ["/usr/src/wait-for-services.sh"]
+
 CMD ["sh", "-c", "python app/modules/database_module/scripts/init_db.py && python app/modules/database_module/scripts/init_fixtures.py && gunicorn --bind 0.0.0.0:$PORT app.main:app -k uvicorn.workers.UvicornWorker"]
