@@ -47,26 +47,15 @@ class UserService:
         return UserOutputSchema(**user.__dict__)
 
     @staticmethod
-    async def delete_user(
-        sub: str, email: str, user_agent: str | None = None
-    ) -> UserOutputSchema:
-        """
-        Deletes a user safely:
-        1. Remove all associated sessions
-        2. Delete the user from Supabase
-        3. Delete the user from the local database
-        """
-        # Retrieve the user by email from the local database
+    async def delete_user(sub: str, email: str) -> UserOutputSchema:
         user = await UserRepository.get_user_by_email(email)
         if not user:
             raise UserServiceException(UserServiceExceptionInfo.USER_NOT_FOUND)
 
-        # Delete all user sessions
-        sessions = await user.sessions.all()
-        for session in sessions:
-            await AuthRepository.delete_session(user.id, session.refresh_token)
 
-        # Delete the user in Supabase using their UUID (sub)
+        await AuthRepository.delete_all_sessions(user.id)
+
+
         supabase = await get_supabase_admin()
         try:
             await supabase.auth.admin.delete_user(sub)
@@ -75,10 +64,9 @@ class UserService:
                 UserServiceExceptionInfo.ERROR_DELETING_USER_SUPABASE
             )
 
-        # Delete the user from the local database
+
         deleted_user = await UserRepository.delete_user(user.id)
         if not deleted_user:
             raise UserServiceException(UserServiceExceptionInfo.USER_NOT_FOUND)
 
-        # Return the deleted user data as a schema instance
         return UserOutputSchema(**deleted_user.__dict__)

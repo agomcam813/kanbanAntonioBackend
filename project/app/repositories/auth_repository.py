@@ -16,6 +16,17 @@ class AuthRepository:
 
     @staticmethod
     async def get_user_by_email(email: str) -> User | None:
+        """
+        Get a user by their email address.
+
+        Retrieves a user object from the database using their email address.
+
+        Parameters:
+        - email: Email address of the user to retrieve
+
+        Returns:
+        - User object if found, or None if not found
+        """
         return await DatabaseModule.get_entity_filtered(User, {"email": email})
 
     @staticmethod
@@ -23,7 +34,15 @@ class AuthRepository:
         user_id: int, refresh_token: str, user_agent: str | None = None
     ) -> dict:
         """
-        Guarda el refresh token en Redis como JSON, con TTL.
+        Create a new session in Redis.
+
+        Parameters:
+        - user_id: ID of the user associated with the session
+        - refresh_token: Refresh token associated with the session
+        - user_agent: User agent string associated with the session (optional)
+
+        Returns:
+        - Session data as a dictionary
         """
         key = f"user:{user_id}:refresh_token:{refresh_token}"
         value = json.dumps(
@@ -31,7 +50,6 @@ class AuthRepository:
         )
         r.set(key, value, ex=REFRESH_TOKEN_TTL)
 
-        # Devuelve un dict con info de la sesión
         return {
             "user_id": user_id,
             "refresh_token": refresh_token,
@@ -42,8 +60,14 @@ class AuthRepository:
     @staticmethod
     async def get_session(user_id: int, refresh_token: str) -> dict | None:
         """
-        Recupera la sesión desde Redis.
-        Devuelve dict con metadata si existe, None si no.
+        Get session data from Redis.
+
+        Parameters:
+        - user_id: ID of the user associated with the session
+        - refresh_token: Refresh token associated with the session
+
+        Returns:
+        - Session data as a dictionary if the session exists, or None if it doesn't
         """
         key = f"user:{user_id}:refresh_token:{refresh_token}"
         data = r.get(key)
@@ -54,7 +78,19 @@ class AuthRepository:
     @staticmethod
     async def delete_session(user_id: int, refresh_token: str) -> None:
         """
-        Borra la sesión de Redis.
+        delete session in redis.
         """
         key = f"user:{user_id}:refresh_token:{refresh_token}"
         r.delete(key)
+
+    @staticmethod
+    async def delete_all_sessions(user_id: int) -> None:
+        """
+        delete all user session
+        """
+
+        pattern = f"user:{user_id}:refresh_token:*"
+        keys = r.keys(pattern)
+
+        if keys:
+            r.delete(*keys)
