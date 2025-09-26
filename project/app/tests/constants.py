@@ -1,6 +1,8 @@
 import uuid
 from typing import Final
 
+from pydantic import EmailStr
+
 email_random_1 = f"{str(uuid.uuid4()).lower()}@gmail.com"
 email_random_2 = f"{str(uuid.uuid4()).lower()}@gmail.com"
 
@@ -27,6 +29,11 @@ class ApiServices:
 
     # BOARD
     APP_BOARD: str = "/boards"
+    APP_BOARD_GET_ALL: str = "/boards/all-board-paginated/{workspace_id}"
+    APP_BOARD_UPDATE_FAVORITE: str = "/boards/update-favorite/{board_id}"
+    APP_BOARD_INVITE_USER: str = "/boards/invite"
+    APP_BOARD_REMOVE_USER: str = "/boards/remove-member"
+    APP_BOARD_GET_MEMBERS: str = "/boards/{board_id}/members"
 
     # COLUMN
     APP_COLUMNS: str = "/workspaces/{workspace_id}/boards/{board_id}/columns"
@@ -114,3 +121,18 @@ class BoardCreateErrorWorkspaceId:
     name: str = "Test Board"
     is_favorite: bool = False
     workspace_id: int = 1
+
+
+class BoardInviteUser:
+    board_id: int = 1
+    invited_user_email: EmailStr = email_random_2
+
+
+class BoardRemoveUser:
+    board_id: int = 1
+    user_email_to_remove: str = email_random_2
+
+
+class BoardRemoveUserErrorOwner:
+    board_id: int = 1
+    user_email_to_remove: str = email_random_1
