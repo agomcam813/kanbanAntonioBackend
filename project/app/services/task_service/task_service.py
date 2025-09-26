@@ -2,10 +2,7 @@ from black.trans import defaultdict
 
 from app.repositories.column_repository import ColumnRepository
 from app.repositories.task_repository import TaskRepository
-from app.schemas.column_schema import (
-    ColumnOutputSchema,
-    ColumnWithTasksSchema,
-)
+from app.schemas.column_schema import ColumnOutputSchema, ColumnWithTasksSchema
 from app.schemas.task_schema import (
     TaskCreateSchema,
     TaskFilterByTitleAndBoard,
