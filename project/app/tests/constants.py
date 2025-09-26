@@ -26,10 +26,7 @@ class ApiServices:
     APP_WORKSPACE_REMOVE: str = "/workspaces/remove-workspace/{workspace_id}"
 
     # BOARD
-    APP_BOARDS: str = "/workspaces/{workspace_id}/boards"
-    APP_BOARD: str = "/workspaces/{workspace_id}/boards/{board_id}"
-    APP_BOARD_USERS: str = "/workspaces/{workspace_id}/boards/{board_id}/users"
-    APP_BOARD_USER: str = "/workspaces/{workspace_id}/boards/{board_id}/users/{user_id}"
+    APP_BOARD: str = "/boards"
 
     # COLUMN
     APP_COLUMNS: str = "/workspaces/{workspace_id}/boards/{board_id}/columns"
@@ -88,6 +85,10 @@ class TestWorkspace1:
     name: str = "Test Workspace"
 
 
+class TestWorkspace2:
+    name: str = "Test Workspace 2"
+
+
 class WorkspaceInvitation:
     workspace_id: int = 1
     invited_user_email: str = email_random_2
@@ -101,3 +102,15 @@ class WorkspaceRemoveInvitation:
 class WorkspaceRemoveInvitationOwner:
     workspace_id: int = 1
     user_email_to_remove: str = email_random_1
+
+
+class BoardCreate:
+    name: str = "Test Board"
+    is_favorite: bool = False
+    workspace_id: int = 1
+
+
+class BoardCreateErrorWorkspaceId:
+    name: str = "Test Board"
+    is_favorite: bool = False
+    workspace_id: int = 1
