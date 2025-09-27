@@ -36,11 +36,9 @@ class ApiServices:
     APP_BOARD_GET_MEMBERS: str = "/boards/{board_id}/members"
 
     # COLUMN
-    APP_COLUMNS: str = "/workspaces/{workspace_id}/boards/{board_id}/columns"
-    APP_COLUMN: str = "/workspaces/{workspace_id}/boards/{board_id}/columns/{column_id}"
-    APP_COLUMN_REORDER: str = (
-        "/workspaces/{workspace_id}/boards/{board_id}/columns/reorder"
-    )
+    APP_COLUMN: str = "/columns"
+    APP_COLUMN_GET_ALL: str = "/columns/{board_id}"
+
 
     # TASK
     APP_TASKS: str = (
@@ -136,3 +134,8 @@ class BoardRemoveUser:
 class BoardRemoveUserErrorOwner:
     board_id: int = 1
     user_email_to_remove: str = email_random_1
+
+
+class ColumnCreate:
+    name: str = "Test Column"
+    board_id: int = 1

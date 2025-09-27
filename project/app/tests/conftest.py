@@ -173,5 +173,6 @@ order = {
     "test_auth.py": 0,
     "test_workspace.py": 1,
     "test_board.py": 2,
+    "test_column.py": 3,
     "test_user.py": 6,
 }
