@@ -38,7 +38,8 @@ class ApiServices:
     # COLUMN
     APP_COLUMN: str = "/columns"
     APP_COLUMN_GET_ALL: str = "/columns/{board_id}"
-
+    APP_COLUMN_CHANGE_NAME: str = "/columns/change-name"
+    APP_COLUMN_MOVE: str = "/columns/move"
 
     # TASK
     APP_TASKS: str = (
@@ -136,6 +137,26 @@ class BoardRemoveUserErrorOwner:
     user_email_to_remove: str = email_random_1
 
 
-class ColumnCreate:
+class ColumnCreate1:
     name: str = "Test Column"
     board_id: int = 1
+
+
+class ColumnCreate2:
+    name: str = "Test Column 2"
+    board_id: int = 1
+
+
+class ColumnChangeSameName:
+    id: int = 1
+    new_name: str = "Test Column"
+
+
+class ColumnChangeDifferentName:
+    id: int = 1
+    new_name: str = str(uuid.uuid4()).lower()
+
+
+class ColumnMove:
+    id: int = 1
+    new_order: int = 2
