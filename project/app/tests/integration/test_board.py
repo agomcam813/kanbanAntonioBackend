@@ -21,7 +21,7 @@ from app.tests.constants import (
 class TestBoard:
     @staticmethod
     def invitation_user_board(
-            board_invite_schema: BoardInvitationSchema, test_app: TestAPP
+        board_invite_schema: BoardInvitationSchema, test_app: TestAPP
     ) -> Response:
         response = test_app.do_request_with_role(
             "USER_1",
@@ -33,7 +33,7 @@ class TestBoard:
 
     @staticmethod
     def remove_user_board(
-            board_remove_user_schema: BoardRemoveMemberSchema, test_app: TestAPP
+        board_remove_user_schema: BoardRemoveMemberSchema, test_app: TestAPP
     ) -> Response:
         response = test_app.do_request_with_role(
             "USER_1",

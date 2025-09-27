@@ -1,10 +1,20 @@
 import pytest
 from requests import Response
 
-from app.schemas.column_schema import ColumnInputSchema, ColumnUpdateNameSchema, ColumnUpdateOrderSchema
+from app.schemas.column_schema import (
+    ColumnInputSchema,
+    ColumnUpdateNameSchema,
+    ColumnUpdateOrderSchema,
+)
 from app.tests.conftest import TestAPP
-from app.tests.constants import ColumnCreate1, ApiServices, ColumnChangeSameName, ColumnChangeDifferentName, \
-    ColumnCreate2, ColumnMove
+from app.tests.constants import (
+    ApiServices,
+    ColumnChangeDifferentName,
+    ColumnChangeSameName,
+    ColumnCreate1,
+    ColumnCreate2,
+    ColumnMove,
+)
 
 
 @pytest.mark.usefixtures("test_app")
@@ -21,9 +31,7 @@ class TestColumn:
     @staticmethod
     def get_all_columns(board_id: int, test_app: TestAPP) -> Response:
         return test_app.do_request_with_role(
-            "USER_1",
-            "GET",
-            ApiServices.APP_COLUMN_GET_ALL.format(board_id=board_id)
+            "USER_1", "GET", ApiServices.APP_COLUMN_GET_ALL.format(board_id=board_id)
         )
 
     def test_get_all_columns_empty(self, test_app):
@@ -55,7 +63,7 @@ class TestColumn:
             "USER_1",
             "PUT",
             ApiServices.APP_COLUMN_CHANGE_NAME,
-            data=column_schema.model_dump()
+            data=column_schema.model_dump(),
         )
 
         assert response.status_code == 400
@@ -66,7 +74,7 @@ class TestColumn:
             "USER_1",
             "PUT",
             ApiServices.APP_COLUMN_CHANGE_NAME,
-            data=column_schema.model_dump()
+            data=column_schema.model_dump(),
         )
 
         assert response.status_code == 200
@@ -77,6 +85,6 @@ class TestColumn:
             "USER_1",
             "PUT",
             ApiServices.APP_COLUMN_MOVE,
-            data=column_schema.model_dump()
+            data=column_schema.model_dump(),
         )
         assert response.status_code == 200
