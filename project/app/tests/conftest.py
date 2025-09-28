@@ -175,5 +175,6 @@ order = {
     "test_workspace.py": 1,
     "test_board.py": 2,
     "test_column.py": 3,
+    "test_task.py": 4,
     "test_user.py": 6,
 }

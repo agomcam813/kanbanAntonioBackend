@@ -43,17 +43,7 @@ class ApiServices:
     APP_COLUMN_REMOVE: str = "/columns/{column_id}"
 
     # TASK
-    APP_TASKS: str = (
-        "/workspaces/{workspace_id}/boards/{board_id}/columns/{column_id}/tasks"
-    )
-    APP_TASK: str = (
-        "/workspaces/{workspace_id}/boards/{board_id}/columns/{column_id}"
-        "/tasks/{task_id}"
-    )
-    APP_TASK_MOVE: str = (
-        "/workspaces/{workspace_id}/boards/{board_id}/columns/{column_id}/"
-        "tasks/{task_id}/move"
-    )
+    APP_TASK: str = "/tasks/"
 
 
 class Credentials:
@@ -161,3 +151,8 @@ class ColumnChangeDifferentName:
 class ColumnMove:
     id: int = 1
     new_order: int = 2
+
+class TaskCreate:
+    title: str = "Test Task"
+    description: str = "Test Task Description"
+    column_id: int = 1
