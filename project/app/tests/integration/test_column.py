@@ -3,8 +3,9 @@ from requests import Response
 
 from app.schemas.column_schema import (
     ColumnInputSchema,
+    ColumnOutputSchema,
     ColumnUpdateNameSchema,
-    ColumnUpdateOrderSchema, ColumnOutputSchema,
+    ColumnUpdateOrderSchema,
 )
 from app.tests.conftest import TestAPP
 from app.tests.constants import (
@@ -39,7 +40,7 @@ class TestColumn:
         response = test_app.do_request_with_role(
             user,
             "DELETE",
-            ApiServices.APP_COLUMN_REMOVE.format(column_id=test_app.column_2.id)
+            ApiServices.APP_COLUMN_REMOVE.format(column_id=test_app.column_2.id),
         )
         return response
 

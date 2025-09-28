@@ -152,6 +152,7 @@ class ColumnMove:
     id: int = 1
     new_order: int = 2
 
+
 class TaskCreate:
     title: str = "Test Task"
     description: str = "Test Task Description"

@@ -1,8 +1,7 @@
 import pytest
 
 from app.schemas.task_schema import TaskInputSchema
-from app.tests.conftest import TestAPP
-from app.tests.constants import TaskCreate, ApiServices
+from app.tests.constants import ApiServices, TaskCreate
 
 
 @pytest.mark.usefixtures("test_app")
