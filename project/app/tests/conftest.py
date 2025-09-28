@@ -9,7 +9,7 @@ from tortoise.contrib.fastapi import register_tortoise
 
 from app.app_config import AppSettings, get_application_settings
 from app.main import create_app
-from app.modules.database_module.models.default import Board, Workspace
+from app.modules.database_module.models.default import Board, Workspace, Column
 from app.modules.database_module.scripts.init_db import generate_schema
 from app.modules.database_module.scripts.test_init_fixtures import (
     create_tasks_by_board_view,
@@ -34,6 +34,7 @@ class TestAPP:
         self.workspace_1 = Workspace()
         self.workspace_2 = Workspace()
         self.board_1 = Board()
+        self.column_2 = Column()
 
     def do_request(
         self, http_method: str, endpoint: str, headers: dict = None, data: dict = None

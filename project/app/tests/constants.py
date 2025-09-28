@@ -40,6 +40,7 @@ class ApiServices:
     APP_COLUMN_GET_ALL: str = "/columns/{board_id}"
     APP_COLUMN_CHANGE_NAME: str = "/columns/change-name"
     APP_COLUMN_MOVE: str = "/columns/move"
+    APP_COLUMN_REMOVE: str = "/columns/{column_id}"
 
     # TASK
     APP_TASKS: str = (

@@ -4,7 +4,7 @@ from requests import Response
 from app.schemas.column_schema import (
     ColumnInputSchema,
     ColumnUpdateNameSchema,
-    ColumnUpdateOrderSchema,
+    ColumnUpdateOrderSchema, ColumnOutputSchema,
 )
 from app.tests.conftest import TestAPP
 from app.tests.constants import (
@@ -34,6 +34,15 @@ class TestColumn:
             "USER_1", "GET", ApiServices.APP_COLUMN_GET_ALL.format(board_id=board_id)
         )
 
+    @staticmethod
+    def remove_column(user: str, test_app: TestAPP) -> Response:
+        response = test_app.do_request_with_role(
+            user,
+            "DELETE",
+            ApiServices.APP_COLUMN_REMOVE.format(column_id=test_app.column_2.id)
+        )
+        return response
+
     def test_get_all_columns_empty(self, test_app):
         response = self.get_all_columns(test_app.board_1.id, test_app)
         assert response.status_code == 200
@@ -47,6 +56,7 @@ class TestColumn:
         column_schema = ColumnInputSchema(**ColumnCreate2.__dict__)
         response = self.create_column(column_schema, test_app)
         assert response.status_code == 200
+        test_app.column_2 = ColumnOutputSchema(**response.json())
 
     def test_create_column_exist(self, test_app):
         column_schema = ColumnInputSchema(**ColumnCreate1.__dict__)
@@ -88,3 +98,15 @@ class TestColumn:
             data=column_schema.model_dump(),
         )
         assert response.status_code == 200
+
+    def test_remove_column__none_owner(self, test_app):
+        response = self.remove_column("USER_2", test_app)
+        assert response.status_code == 403
+
+    def test_remove_column_success(self, test_app):
+        response = self.remove_column("USER_1", test_app)
+        assert response.status_code == 200
+
+    def test_remove_column_none_exist(self, test_app):
+        response = self.remove_column("USER_1", test_app)
+        assert response.status_code == 404
