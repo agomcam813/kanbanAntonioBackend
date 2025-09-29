@@ -44,6 +44,8 @@ class ApiServices:
 
     # TASK
     APP_TASK: str = "/tasks/"
+    APP_TASK_GET_COLUMNS_WITH_TASKS: str = "/tasks/board/{board_id}"
+    APP_TASK_UPDATE: str = "/tasks/update"
 
 
 class Credentials:
@@ -157,6 +159,18 @@ class TaskCreate:
     title: str = "Test Task"
     description: str = "Test Task Description"
     column_id: int = 1
+
+
+class TaskUpdate:
+    id: int = 1
+    title: str = "Update task"
+    description: str = "Update task"
+
+
+class TaskUpdateErrorTask:
+    id: int = 99
+    title: str = "Update task"
+    description: str = "Update task"
 
 
 class TaskCreateErrorColumnId:
