@@ -13,6 +13,10 @@ class ApiServices:
     # AUTH
     APP_REGISTER: str = "/auth/register"
     APP_LOGIN: str = "/auth/login"
+    APP_REFRESH: str = "/auth/refresh"
+    APP_LOGOUT: str = "/auth/logout"
+    APP_FORGOT_PASSWORD: str = "/auth/forgot-password"
+    APP_RESET_PASSWORD: str = "/auth/reset-password"
 
     # USER
     APP_DELETE_ME_USER: str = "/users/me"
