@@ -1,15 +1,14 @@
 import uuid
 
 import pytest
-from requests import Response
 
 from app.schemas.auth_schema import (
     ForgotPasswordSchema,
-    LoginSchema, 
+    LoginSchema,
     LogoutSchema,
     RefreshSchema,
     RegisterSchema,
-    ResetPasswordSchema
+    ResetPasswordSchema,
 )
 from app.tests.conftest import TestAPP
 from app.tests.constants import ApiServices, RegisterUser1, RegisterUser2
@@ -18,7 +17,9 @@ from app.tests.constants import ApiServices, RegisterUser1, RegisterUser2
 @pytest.mark.usefixtures("test_app")
 class TestAuth:
     @staticmethod
-    def login_user_and_get_tokens(test_app: TestAPP, user_email: str, user_password: str) -> tuple[str, str]:
+    def login_user_and_get_tokens(
+        test_app: TestAPP, user_email: str, user_password: str
+    ) -> tuple[str, str]:
         """Helper method to login and return access_token and refresh_token"""
         login_schema = LoginSchema(email=user_email, password=user_password)
         response = test_app.do_request(
@@ -26,7 +27,7 @@ class TestAuth:
             ApiServices.APP_LOGIN,
             data=login_schema.model_dump(),
         )
-        
+
         if response.status_code == 200:
             data = response.json()
             return data.get("access_token"), data.get("refresh_token")
@@ -96,7 +97,7 @@ class TestAuth:
             "email": "invalid-email",
             "password": RegisterUser1.password,
             "name": "Test",
-            "surname": "User"
+            "surname": "User",
         }
         response = test_app.do_request(
             "POST",
@@ -111,7 +112,7 @@ class TestAuth:
             "email": f"{str(uuid.uuid4()).lower()}@test.com",
             "password": "123",  # Weak password
             "name": "Test",
-            "surname": "User"
+            "surname": "User",
         }
         response = test_app.do_request(
             "POST",
@@ -145,36 +146,31 @@ class TestAuth:
 
     def test_login_invalid_email_failure(self, test_app):
         """Test login fails with non-existent email"""
-        login_schema = LoginSchema(
-            email="nonexistent@test.com",
-            password="anypassword"
-        )
+        login_schema = LoginSchema(email="nonexistent@test.com", password="anypassword")
         response = test_app.do_request(
             "POST",
             ApiServices.APP_LOGIN,
             data=login_schema.model_dump(),
         )
-        assert response.status_code == 401  # Based on AuthServiceExceptionInfo.ERROR_INVALID_CREDENTIALS
+        assert (
+            response.status_code == 401
+        )  # Based on AuthServiceExceptionInfo.ERROR_INVALID_CREDENTIALS
 
     def test_login_invalid_password_failure(self, test_app):
         """Test login fails with wrong password"""
-        login_schema = LoginSchema(
-            email=RegisterUser1.email,
-            password="wrongpassword"
-        )
+        login_schema = LoginSchema(email=RegisterUser1.email, password="wrongpassword")
         response = test_app.do_request(
             "POST",
             ApiServices.APP_LOGIN,
             data=login_schema.model_dump(),
         )
-        assert response.status_code == 401  # Based on AuthServiceExceptionInfo.ERROR_INVALID_CREDENTIALS
+        assert (
+            response.status_code == 401
+        )  # Based on AuthServiceExceptionInfo.ERROR_INVALID_CREDENTIALS
 
     def test_login_invalid_email_format(self, test_app):
         """Test login fails with invalid email format"""
-        invalid_login_data = {
-            "email": "invalid-email",
-            "password": "anypassword"
-        }
+        invalid_login_data = {"email": "invalid-email", "password": "anypassword"}
         response = test_app.do_request(
             "POST",
             ApiServices.APP_LOGIN,
@@ -194,7 +190,7 @@ class TestAuth:
         )
         assert access_token is not None
         assert refresh_token is not None
-        
+
         # Now refresh the token
         refresh_schema = RefreshSchema(refresh_token=refresh_token)
         response = test_app.do_request(
@@ -203,7 +199,7 @@ class TestAuth:
             headers={"Authorization": f"Bearer {access_token}"},
             data=refresh_schema.model_dump(),
         )
-        
+
         assert response.status_code == 200
         assert "access_token" in response.json()
         assert "refresh_token" in response.json()
@@ -216,7 +212,7 @@ class TestAuth:
             test_app, RegisterUser1.email, RegisterUser1.password
         )
         assert access_token is not None
-        
+
         # Try to refresh with invalid token
         refresh_schema = RefreshSchema(refresh_token="invalid_refresh_token")
         response = test_app.do_request(
@@ -225,8 +221,10 @@ class TestAuth:
             headers={"Authorization": f"Bearer {access_token}"},
             data=refresh_schema.model_dump(),
         )
-        
-        assert response.status_code == 401  # Based on AuthServiceExceptionInfo.ERROR_REFRESH_TOKEN_INVALID
+
+        assert (
+            response.status_code == 401
+        )  # Based on AuthServiceExceptionInfo.ERROR_REFRESH_TOKEN_INVALID
 
     def test_refresh_token_no_authorization_header_failure(self, test_app):
         """Test refresh fails without authorization header"""
@@ -236,7 +234,7 @@ class TestAuth:
             ApiServices.APP_REFRESH,
             data=refresh_schema.model_dump(),
         )
-        
+
         assert response.status_code == 403  # Forbidden (based on actual behavior)
 
     # =============================================================================
@@ -251,7 +249,7 @@ class TestAuth:
         )
         assert access_token is not None
         assert refresh_token is not None
-        
+
         # Now logout
         logout_schema = LogoutSchema(refresh_token=refresh_token)
         response = test_app.do_request(
@@ -260,7 +258,7 @@ class TestAuth:
             headers={"Authorization": f"Bearer {access_token}"},
             data=logout_schema.model_dump(),
         )
-        
+
         assert response.status_code == 200
         assert "message" in response.json()
         assert response.json()["message"] == "Logged out successfully"
@@ -273,7 +271,7 @@ class TestAuth:
             ApiServices.APP_LOGOUT,
             data=logout_schema.model_dump(),
         )
-        
+
         assert response.status_code == 403  # Forbidden (based on actual behavior)
 
     def test_logout_invalid_access_token_failure(self, test_app):
@@ -285,7 +283,7 @@ class TestAuth:
             headers={"Authorization": "Bearer invalid_access_token"},
             data=logout_schema.model_dump(),
         )
-        
+
         assert response.status_code == 401  # Unauthorized
 
     # =============================================================================
@@ -300,20 +298,21 @@ class TestAuth:
             ApiServices.APP_FORGOT_PASSWORD,
             data=forgot_password_schema.model_dump(),
         )
-        
+
         assert response.status_code == 200
         assert "message" in response.json()
         assert "Password reset email sent successfully" in response.json()["message"]
 
     def test_forgot_password_nonexistent_email(self, test_app):
-        """Test forgot password with non-existent email - should still return success for security"""
+        """Test forgot password with non-existent email
+        - should still return success for security"""
         forgot_password_schema = ForgotPasswordSchema(email="nonexistent@test.com")
         response = test_app.do_request(
             "POST",
             ApiServices.APP_FORGOT_PASSWORD,
             data=forgot_password_schema.model_dump(),
         )
-        
+
         # Should return success even for non-existent emails for security reasons
         # but might return error depending on your implementation
         assert response.status_code in [200, 500]  # Adjust based on your implementation
@@ -326,7 +325,7 @@ class TestAuth:
             ApiServices.APP_FORGOT_PASSWORD,
             data=invalid_forgot_data,
         )
-        
+
         assert response.status_code == 422  # Validation error
 
     # =============================================================================
@@ -336,27 +335,28 @@ class TestAuth:
     def test_reset_password_invalid_token_failure(self, test_app):
         """Test reset password with invalid access token"""
         reset_password_schema = ResetPasswordSchema(
-            access_token="invalid_access_token",
-            new_password="NewPassword123!"
+            access_token="invalid_access_token", new_password="NewPassword123!"
         )
         response = test_app.do_request(
             "POST",
             ApiServices.APP_RESET_PASSWORD,
             data=reset_password_schema.model_dump(),
         )
-        
-        assert response.status_code == 500  # Based on AuthServiceExceptionInfo.ERROR_PASSWORD_RESET_FAILED
+
+        assert (
+            response.status_code == 500
+        )  # Based on AuthServiceExceptionInfo.ERROR_PASSWORD_RESET_FAILED
 
     def test_reset_password_weak_password_failure(self, test_app):
         """Test reset password with weak password"""
         reset_password_data = {
             "access_token": "any_token",
-            "new_password": "123"  # Weak password
+            "new_password": "123",  # Weak password
         }
         response = test_app.do_request(
             "POST",
             ApiServices.APP_RESET_PASSWORD,
             data=reset_password_data,
         )
-        
+
         assert response.status_code == 422  # Validation error

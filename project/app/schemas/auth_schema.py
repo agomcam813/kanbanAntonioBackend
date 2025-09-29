@@ -1,8 +1,12 @@
-from typing import Any, Dict
+from typing import Annotated, Any, Dict
 
-from pydantic import BaseModel, EmailStr, field_validator
+from pydantic import BaseModel, EmailStr, StringConstraints, field_validator
 
 from app.utils.string_helper import StringHelper
+
+NonEmptyStr = Annotated[
+    str, StringConstraints(min_length=1, strip_whitespace=True, max_length=255)
+]
 
 
 class AuthDataOutputSchema(BaseModel):
@@ -13,8 +17,8 @@ class AuthDataOutputSchema(BaseModel):
 class RegisterSchema(BaseModel):
     email: EmailStr
     password: str
-    name: str
-    surname: str
+    name: NonEmptyStr
+    surname: NonEmptyStr
 
     @field_validator("password")
     def validate_password(v: str) -> str:

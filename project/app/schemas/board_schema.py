@@ -1,11 +1,17 @@
 from datetime import datetime
-from typing import Optional
+from typing import Annotated, Optional
+
+from pydantic import StringConstraints
 
 from app.schemas.base_schema import BaseSchema
 
+NonEmptyStr = Annotated[
+    str, StringConstraints(min_length=1, strip_whitespace=True, max_length=255)
+]
+
 
 class BoardCreateSchema(BaseSchema):
-    name: str
+    name: NonEmptyStr
     is_favorite: Optional[bool] = False
     workspace_id: int
 

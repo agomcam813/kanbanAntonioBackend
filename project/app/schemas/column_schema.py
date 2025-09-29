@@ -1,10 +1,18 @@
+from typing import Annotated
+
+from pydantic import StringConstraints
+
 from app.schemas.base_schema import BaseSchema
 from app.schemas.task_schema import TaskOutputSchema
+
+NonEmptyStr = Annotated[
+    str, StringConstraints(min_length=1, strip_whitespace=True, max_length=255)
+]
 
 
 # Input schema for creating a column (user does not provide order)
 class ColumnInputSchema(BaseSchema):
-    name: str
+    name: NonEmptyStr
     board_id: int
 
 
@@ -34,4 +42,4 @@ class ColumnUpdateOrderSchema(BaseSchema):
 
 class ColumnUpdateNameSchema(BaseSchema):
     id: int
-    new_name: str
+    new_name: NonEmptyStr

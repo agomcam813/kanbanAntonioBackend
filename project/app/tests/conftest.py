@@ -177,5 +177,6 @@ order = {
     "test_board.py": 2,
     "test_column.py": 3,
     "test_task.py": 4,
+    "test_validation_edge_cases.py": 5,
     "test_user.py": 6,
 }

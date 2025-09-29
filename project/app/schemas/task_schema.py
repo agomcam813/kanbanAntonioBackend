@@ -1,13 +1,18 @@
 from datetime import datetime
+from typing import Annotated
 
-from pydantic import Field
+from pydantic import Field, StringConstraints
 
 from app.schemas.base_schema import BaseSchema
+
+NonEmptyStr = Annotated[
+    str, StringConstraints(min_length=1, strip_whitespace=True, max_length=255)
+]
 
 
 # Input schema (user does not provide order)
 class TaskInputSchema(BaseSchema):
-    title: str
+    title: NonEmptyStr
     description: str
     column_id: int
 

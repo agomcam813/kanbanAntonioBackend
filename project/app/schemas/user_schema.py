@@ -1,12 +1,16 @@
 from datetime import datetime
-from typing import Optional
+from typing import Annotated, Optional
 
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, StringConstraints
+
+NonEmptyStr = Annotated[
+    str, StringConstraints(min_length=1, strip_whitespace=True, max_length=255)
+]
 
 
 class UserInputSchema(BaseModel):
-    name: str
-    surname: str
+    name: NonEmptyStr
+    surname: NonEmptyStr
     email: EmailStr
 
 

@@ -1,10 +1,17 @@
 from datetime import datetime
+from typing import Annotated
+
+from pydantic import StringConstraints
 
 from app.schemas.base_schema import BaseSchema
 
+NonEmptyStr = Annotated[
+    str, StringConstraints(min_length=1, strip_whitespace=True, max_length=255)
+]
+
 
 class WorkspaceInputSchema(BaseSchema):
-    name: str
+    name: NonEmptyStr
 
 
 class WorkspaceCreateSchema(WorkspaceInputSchema):
@@ -29,12 +36,12 @@ class WorkspaceFilterByUserIdOutputSchema(WorkspaceInputSchema):
 
 class WorkspaceInvitationSchema(BaseSchema):
     workspace_id: int
-    invited_user_email: str
+    invited_user_email: NonEmptyStr
 
 
 class WorkspaceRemoveMemberSchema(BaseSchema):
     workspace_id: int
-    user_email_to_remove: str
+    user_email_to_remove: NonEmptyStr
 
 
 class WorkspaceMemberOutputSchema(BaseSchema):
