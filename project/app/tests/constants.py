@@ -157,3 +157,9 @@ class TaskCreate:
     title: str = "Test Task"
     description: str = "Test Task Description"
     column_id: int = 1
+
+
+class TaskCreateErrorColumnId:
+    title: str = "Test fail task"
+    description: str = "Test Task Description"
+    column_id: int = 99
