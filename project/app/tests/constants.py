@@ -46,6 +46,8 @@ class ApiServices:
     APP_TASK: str = "/tasks/"
     APP_TASK_GET_COLUMNS_WITH_TASKS: str = "/tasks/board/{board_id}"
     APP_TASK_UPDATE: str = "/tasks/update"
+    APP_TASK_MOVE: str = "/tasks/move"
+    APP_TASK_DELETE: str = "/tasks/{task_id}"
 
 
 class Credentials:
@@ -177,3 +179,9 @@ class TaskCreateErrorColumnId:
     title: str = "Test fail task"
     description: str = "Test Task Description"
     column_id: int = 99
+
+
+class TaskMove:
+    id: int = 1
+    new_order: int = 2
+    column_id: int = 1
