@@ -104,3 +104,24 @@ class BoardRepository:
         if not board:
             return []
         return board.members
+
+    @staticmethod
+    async def update_board(board_id: int, payload: dict) -> Board | None:
+        """Update a board with new data"""
+        return await DatabaseModule.put_entity(Board, payload, board_id)
+
+    @staticmethod
+    async def delete_board(board_id: int) -> bool:
+        """Delete a board and all its related data"""
+        try:
+            board = await Board.filter(id=board_id).first()
+            if not board:
+                return False
+            
+            # Clear all many-to-many relationships before deleting
+            await board.users.clear()  # Remove favorites
+            await board.members.clear()  # Remove members
+            await board.delete()
+            return True
+        except Exception:
+            return False

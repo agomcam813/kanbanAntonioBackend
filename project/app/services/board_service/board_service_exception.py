@@ -20,6 +20,7 @@ class BoardServiceExceptionInfo(BaseExceptionInfo):
     ERROR_USER_TO_REMOVE_NOT_FOUND = (3008, "User to remove not found", 404)
     ERROR_CANNOT_REMOVE_BOARD_OWNER = (3009, "Cannot remove board owner", 403)
     ERROR_USER_NOT_IN_BOARD = (3010, "User is not a member of this board", 400)
+    ERROR_USER_NOT_OWNER = (3011, "User is not the owner of this board", 403)
 
 
 class BoardServiceException(BaseException):

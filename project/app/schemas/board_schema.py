@@ -28,6 +28,10 @@ class BoardFilterByNameSchema(BaseSchema):
     workspace_id: int
 
 
+class BoardUpdateSchema(BaseSchema):
+    name: Optional[NonEmptyStr] = None
+
+
 class BoardPaginateSchema(BaseSchema):
     data: list[BoardOutputSchema]
     total: int
