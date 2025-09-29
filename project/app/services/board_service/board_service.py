@@ -293,32 +293,22 @@ class BoardService:
 
     @staticmethod
     async def update_board_name(board_id: int, update_data: BoardUpdateSchema, user_email: str) -> BoardOutputSchema:
-        """
-        Actualiza el nombre de un board.
-        Solo el owner puede actualizar el nombre.
-        """
-        # Obtener usuario
         user = await UserService.get_user_by_email_model(user_email)
 
-        # Obtener board
         board = await BoardRepository.get_board_by_identifier(board_id)
         if not board:
             raise BoardServiceException(BoardServiceExceptionInfo.ERROR_BOARD_NOT_FOUND)
 
-        # Validar que el usuario sea el owner
         if board.owner_id != user.id:
             raise BoardServiceException(BoardServiceExceptionInfo.ERROR_USER_NOT_OWNER)
 
-        # Validar si se proporciona un nuevo nombre
         if update_data.name:
-            # Opcional: validar que no exista otro board con el mismo nombre en el workspace
             existing_board = await BoardService.get_board_by_name_and_workspace_id(
                 BoardFilterByNameSchema(name=update_data.name, workspace_id=board.workspace_id)
             )
             if existing_board and existing_board.id != board.id:
                 raise BoardServiceException(BoardServiceExceptionInfo.ERROR_EXISTING_BOARD_IN_WORKSPACE)
 
-            # Actualizar board
             payload = {"name": update_data.name.strip()}
             updated_board = await BoardRepository.update_board(board_id, payload)
             if not updated_board:
@@ -326,28 +316,19 @@ class BoardService:
 
             return BoardOutputSchema(**updated_board.__dict__)
 
-        # Si no se pasó nombre, retornar el board actual
         return BoardOutputSchema(**board.__dict__)
 
     @staticmethod
     async def delete_board(board_id: int, user_email: str) -> bool:
-        """
-        Elimina un board.
-        Solo el owner puede eliminarlo.
-        """
-        # Obtener usuario
         user = await UserService.get_user_by_email_model(user_email)
 
-        # Obtener board
         board = await BoardRepository.get_board_by_identifier(board_id)
         if not board:
             raise BoardServiceException(BoardServiceExceptionInfo.ERROR_BOARD_NOT_FOUND)
 
-        # Validar que el usuario sea owner
         if board.owner_id != user.id:
             raise BoardServiceException(BoardServiceExceptionInfo.ERROR_USER_NOT_OWNER)
 
-        # Eliminar board usando repositorio
         deleted = await BoardRepository.delete_board(board_id)
         if not deleted:
             raise BoardServiceException(BoardServiceExceptionInfo.ERROR_UPDATING_BOARD)

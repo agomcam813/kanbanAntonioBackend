@@ -119,8 +119,8 @@ class BoardRepository:
                 return False
             
             # Clear all many-to-many relationships before deleting
-            await board.users.clear()  # Remove favorites
-            await board.members.clear()  # Remove members
+            await board.users.clear()
+            await board.members.clear()
             await board.delete()
             return True
         except Exception:

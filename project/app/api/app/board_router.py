@@ -142,10 +142,6 @@ async def update_board(
         update_data: BoardUpdateSchema,
         token: AuthDataOutputSchema = Depends(decode_token)
 ) -> BoardOutputSchema:
-    """
-    Actualiza el nombre (y/o otros campos) de un board.
-    Solo el owner puede actualizar.
-    """
     user_email = token.payload.get("email")
     return await BoardService.update_board_name(board_id, update_data, user_email)
 
@@ -177,9 +173,5 @@ async def remove_board(
         board_id: int,
         token: AuthDataOutputSchema = Depends(decode_token)
 ) -> bool:
-    """
-    Elimina un board.
-    Solo el owner puede eliminarlo.
-    """
     user_email = token.payload.get("email")
     return await BoardService.delete_board(board_id, user_email)
