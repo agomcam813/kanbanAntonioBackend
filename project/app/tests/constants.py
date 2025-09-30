@@ -39,6 +39,7 @@ class ApiServices:
     APP_BOARD_REMOVE_USER: str = "/boards/remove-member"
     APP_BOARD_GET_MEMBERS: str = "/boards/{board_id}/members"
     APP_BOARD_REMOVE: str = "/boards/{board_id}"
+    APP_BOARD_UPDATE: str = "/boards/{board_id}"
 
     # COLUMN
     APP_COLUMN: str = "/columns"
@@ -135,6 +136,10 @@ class BoardRemoveUser:
 class BoardRemoveUserErrorOwner:
     board_id: int = 1
     user_email_to_remove: str = email_random_1
+
+
+class BoardUpdate:
+    name: str = "Test Board Update"
 
 
 class ColumnCreate1:

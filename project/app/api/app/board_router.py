@@ -143,6 +143,20 @@ async def update_board(
     update_data: BoardUpdateSchema,
     token: AuthDataOutputSchema = Depends(decode_token),
 ) -> BoardOutputSchema:
+    """
+    Update the name of a board.
+
+    Changes the name of an existing board.
+    Only board owners can update board names.
+
+    Parameters:
+    - board_id: ID of the board to update
+    - update_data: Contains the new name for the board
+    - token: Authentication data containing user information
+
+    Returns:
+    - The updated board object with its details
+    """
     user_email = token.payload.get("email")
     return await BoardService.update_board_name(board_id, update_data, user_email)
 
@@ -171,7 +185,21 @@ async def remove_user_from_board(
 
 @router.delete("/{board_id}", response_model=bool)
 async def remove_board(
-    board_id: int, token: AuthDataOutputSchema = Depends(decode_token)
+    board_id: int,  # ID of the board to delete
+    token: AuthDataOutputSchema = Depends(decode_token),
 ) -> bool:
+    """
+    Delete a board.
+
+    Permanently removes a board and all its associated data.
+    Only the board owner can delete a board.
+
+    Parameters:
+    - board_id: ID of the board to delete
+    - token: Authentication data containing user information
+
+    Returns:
+    - True if the board was successfully deleted, False otherwise
+    """
     user_email = token.payload.get("email")
     return await BoardService.delete_board(board_id, user_email)

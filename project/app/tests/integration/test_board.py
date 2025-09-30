@@ -6,6 +6,7 @@ from app.schemas.board_schema import (
     BoardInvitationSchema,
     BoardOutputSchema,
     BoardRemoveMemberSchema,
+    BoardUpdateSchema,
 )
 from app.tests.conftest import TestAPP
 from app.tests.constants import (
@@ -14,6 +15,7 @@ from app.tests.constants import (
     BoardInviteUser,
     BoardRemoveUser,
     BoardRemoveUserErrorOwner,
+    BoardUpdate,
 )
 
 
@@ -156,6 +158,55 @@ class TestBoard:
         )
         assert response.status_code == 403
 
+    def test_update_name_board_none_owner(self, test_app):
+        board_update_schema = BoardUpdateSchema(**BoardUpdate.__dict__)
+
+        response = test_app.do_request_with_role(
+            "USER_2",
+            "PUT",
+            ApiServices.APP_BOARD_UPDATE.format(board_id=test_app.board_1.id),
+            data=board_update_schema.model_dump(),
+        )
+
+        assert response.status_code == 403
+
+    def test_update_name_board_success(self, test_app):
+        board_update_schema = BoardUpdateSchema(**BoardUpdate.__dict__)
+
+        response = test_app.do_request_with_role(
+            "USER_1",
+            "PUT",
+            ApiServices.APP_BOARD_UPDATE.format(board_id=test_app.board_1.id),
+            data=board_update_schema.model_dump(),
+        )
+
+        assert response.status_code == 200
+        test_app.board_1 = BoardOutputSchema(**response.json())
+
+    def test_update_name_with_same_board_name(self, test_app):
+        board_update_schema = BoardUpdateSchema(name=test_app.board_1.name)
+
+        response = test_app.do_request_with_role(
+            "USER_1",
+            "PUT",
+            ApiServices.APP_BOARD_UPDATE.format(board_id=test_app.board_2.id),
+            data=board_update_schema.model_dump(),
+        )
+
+        assert response.status_code == 400
+
+    def test_update_name_with_my_same_board_name(self, test_app):
+        board_update_schema = BoardUpdateSchema(name=test_app.board_1.name)
+
+        response = test_app.do_request_with_role(
+            "USER_1",
+            "PUT",
+            ApiServices.APP_BOARD_UPDATE.format(board_id=test_app.board_1.id),
+            data=board_update_schema.model_dump(),
+        )
+
+        assert response.status_code == 200
+
     def test_delete_board_success(self, test_app):
         response = test_app.do_request_with_role(
             "USER_1",
@@ -170,4 +221,16 @@ class TestBoard:
             "DELETE",
             ApiServices.APP_BOARD_REMOVE.format(board_id=test_app.board_2.id),
         )
+        assert response.status_code == 404
+
+    def test_update_name_with_board_none_exist(self, test_app):
+        board_update_schema = BoardUpdateSchema(name=test_app.board_1.name)
+
+        response = test_app.do_request_with_role(
+            "USER_1",
+            "PUT",
+            ApiServices.APP_BOARD_UPDATE.format(board_id=test_app.board_2.id),
+            data=board_update_schema.model_dump(),
+        )
+        print(response.json())
         assert response.status_code == 404

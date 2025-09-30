@@ -29,7 +29,7 @@ class BoardFilterByNameSchema(BaseSchema):
 
 
 class BoardUpdateSchema(BaseSchema):
-    name: Optional[NonEmptyStr] = None
+    name: NonEmptyStr
 
 
 class BoardPaginateSchema(BaseSchema):
