@@ -117,7 +117,7 @@ class BoardRepository:
             board = await Board.filter(id=board_id).first()
             if not board:
                 return False
-            
+
             # Clear all many-to-many relationships before deleting
             await board.users.clear()
             await board.members.clear()

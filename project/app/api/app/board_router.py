@@ -8,7 +8,8 @@ from app.schemas.board_schema import (
     BoardMemberOutputSchema,
     BoardOutputSchema,
     BoardPaginateSchema,
-    BoardRemoveMemberSchema, BoardUpdateSchema,
+    BoardRemoveMemberSchema,
+    BoardUpdateSchema,
 )
 from app.services.board_service.board_service import BoardService
 
@@ -17,11 +18,11 @@ router = APIRouter()
 
 @router.get("/all-board-paginated/{workspace_id}", response_model=BoardPaginateSchema)
 async def get_all_board_paginated(
-        workspace_id: int,
-        is_favourite: bool = False,
-        page: int = 0,
-        limit: int = 25,
-        token: AuthDataOutputSchema = Depends(decode_token),
+    workspace_id: int,
+    is_favourite: bool = False,
+    page: int = 0,
+    limit: int = 25,
+    token: AuthDataOutputSchema = Depends(decode_token),
 ) -> BoardPaginateSchema:
     """
     Retrieve paginated boards for a specific workspace.
@@ -48,8 +49,8 @@ async def get_all_board_paginated(
 
 @router.get("/{board_id}/members", response_model=list[BoardMemberOutputSchema])
 async def get_board_members(
-        board_id: int,
-        token: AuthDataOutputSchema = Depends(decode_token),
+    board_id: int,
+    token: AuthDataOutputSchema = Depends(decode_token),
 ) -> list[BoardMemberOutputSchema]:
     """
     Retrieve all members of a specific board.
@@ -70,8 +71,8 @@ async def get_board_members(
 
 @router.post("/", response_model=BoardOutputSchema)
 async def create_board(
-        payload: BoardCreateSchema,
-        token_decoder: AuthDataOutputSchema = Depends(decode_token),
+    payload: BoardCreateSchema,
+    token_decoder: AuthDataOutputSchema = Depends(decode_token),
 ) -> BoardOutputSchema:
     """
     Create a new board within a workspace.
@@ -93,8 +94,8 @@ async def create_board(
 
 @router.post("/invite", response_model=BoardInvitationSchema)
 async def invite_user_to_board(
-        invitation: BoardInvitationSchema,
-        token: AuthDataOutputSchema = Depends(decode_token),
+    invitation: BoardInvitationSchema,
+    token: AuthDataOutputSchema = Depends(decode_token),
 ) -> BoardInvitationSchema:
     """
     Invite a user to join a board.
@@ -116,7 +117,7 @@ async def invite_user_to_board(
 
 @router.put("/update-favorite/{board_id}", response_model=BoardOutputSchema)
 async def update_board_favourite(
-        board_id: int, token: AuthDataOutputSchema = Depends(decode_token)
+    board_id: int, token: AuthDataOutputSchema = Depends(decode_token)
 ) -> BoardOutputSchema:
     """
     Toggle the favorite status of a board for the current user.
@@ -138,9 +139,9 @@ async def update_board_favourite(
 
 @router.put("/{board_id}", response_model=BoardOutputSchema)
 async def update_board(
-        board_id: int,
-        update_data: BoardUpdateSchema,
-        token: AuthDataOutputSchema = Depends(decode_token)
+    board_id: int,
+    update_data: BoardUpdateSchema,
+    token: AuthDataOutputSchema = Depends(decode_token),
 ) -> BoardOutputSchema:
     user_email = token.payload.get("email")
     return await BoardService.update_board_name(board_id, update_data, user_email)
@@ -148,8 +149,8 @@ async def update_board(
 
 @router.delete("/remove-member", response_model=BoardRemoveMemberSchema)
 async def remove_user_from_board(
-        removal: BoardRemoveMemberSchema,
-        token: AuthDataOutputSchema = Depends(decode_token),
+    removal: BoardRemoveMemberSchema,
+    token: AuthDataOutputSchema = Depends(decode_token),
 ) -> BoardRemoveMemberSchema:
     """
     Remove a user from a board.
@@ -170,8 +171,7 @@ async def remove_user_from_board(
 
 @router.delete("/{board_id}", response_model=bool)
 async def remove_board(
-        board_id: int,
-        token: AuthDataOutputSchema = Depends(decode_token)
+    board_id: int, token: AuthDataOutputSchema = Depends(decode_token)
 ) -> bool:
     user_email = token.payload.get("email")
     return await BoardService.delete_board(board_id, user_email)

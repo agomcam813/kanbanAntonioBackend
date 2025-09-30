@@ -38,6 +38,7 @@ class ApiServices:
     APP_BOARD_INVITE_USER: str = "/boards/invite"
     APP_BOARD_REMOVE_USER: str = "/boards/remove-member"
     APP_BOARD_GET_MEMBERS: str = "/boards/{board_id}/members"
+    APP_BOARD_REMOVE: str = "/boards/{board_id}"
 
     # COLUMN
     APP_COLUMN: str = "/columns"

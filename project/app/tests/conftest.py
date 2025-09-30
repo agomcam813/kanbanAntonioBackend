@@ -34,6 +34,7 @@ class TestAPP:
         self.workspace_1 = Workspace()
         self.workspace_2 = Workspace()
         self.board_1 = Board()
+        self.board_2 = Board()
         self.column_2 = Column()
         self.task_1 = Task()
 

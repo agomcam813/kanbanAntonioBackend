@@ -25,7 +25,7 @@ from app.services.workspace_service.workspace_service import WorkspaceService
 class BoardService:
     @staticmethod
     async def create_board(
-            board: BoardCreateSchema, user_email: str
+        board: BoardCreateSchema, user_email: str
     ) -> BoardOutputSchema:
         # Get user by email
         user = await UserService.get_user_by_email_model(user_email)
@@ -74,7 +74,7 @@ class BoardService:
 
     @staticmethod
     async def get_board_by_name_and_workspace_id(
-            board_filtered: BoardFilterByNameSchema,
+        board_filtered: BoardFilterByNameSchema,
     ) -> BoardOutputSchema | None:
         # Retrieve a board by name within a workspace
         board = await BoardRepository.get_board_by_name_and_workspace(
@@ -87,11 +87,11 @@ class BoardService:
 
     @staticmethod
     async def get_all_board_paginate_by_workspace_id(
-            user_email: str,
-            workspace_id: int,
-            is_favorite: bool,
-            page: int = 0,
-            limit: int = 25,
+        user_email: str,
+        workspace_id: int,
+        is_favorite: bool,
+        page: int = 0,
+        limit: int = 25,
     ) -> BoardPaginateSchema:
         # Get user by email
         user = await UserService.get_user_by_email_model(user_email)
@@ -142,7 +142,7 @@ class BoardService:
 
     @staticmethod
     async def update_favorite_board(
-            board_id: int, user_email: str
+        board_id: int, user_email: str
     ) -> BoardOutputSchema:
         # Get user by email
         user = await UserService.get_user_by_email_model(user_email)
@@ -186,7 +186,7 @@ class BoardService:
 
     @staticmethod
     async def invite_user_to_board(
-            invitation: BoardInvitationSchema, inviter_email: str
+        invitation: BoardInvitationSchema, inviter_email: str
     ) -> BoardInvitationSchema:
         """Invite a user to a board (only board owner can do this)"""
         # Validate inviter is board owner
@@ -224,7 +224,7 @@ class BoardService:
 
     @staticmethod
     async def remove_user_from_board(
-            removal: BoardRemoveMemberSchema, remover_email: str
+        removal: BoardRemoveMemberSchema, remover_email: str
     ) -> BoardRemoveMemberSchema:
         """Remove a user from a board (only board owner can do this)"""
         # Validate remover is board owner
@@ -268,7 +268,7 @@ class BoardService:
 
     @staticmethod
     async def get_board_members(
-            board_id: int, requester_email: str
+        board_id: int, requester_email: str
     ) -> list[BoardMemberOutputSchema]:
         """Get all members of a board"""
         # Validate requester has access to board
@@ -292,7 +292,9 @@ class BoardService:
         ]
 
     @staticmethod
-    async def update_board_name(board_id: int, update_data: BoardUpdateSchema, user_email: str) -> BoardOutputSchema:
+    async def update_board_name(
+        board_id: int, update_data: BoardUpdateSchema, user_email: str
+    ) -> BoardOutputSchema:
         user = await UserService.get_user_by_email_model(user_email)
 
         board = await BoardRepository.get_board_by_identifier(board_id)
@@ -304,15 +306,21 @@ class BoardService:
 
         if update_data.name:
             existing_board = await BoardService.get_board_by_name_and_workspace_id(
-                BoardFilterByNameSchema(name=update_data.name, workspace_id=board.workspace_id)
+                BoardFilterByNameSchema(
+                    name=update_data.name, workspace_id=board.workspace_id
+                )
             )
             if existing_board and existing_board.id != board.id:
-                raise BoardServiceException(BoardServiceExceptionInfo.ERROR_EXISTING_BOARD_IN_WORKSPACE)
+                raise BoardServiceException(
+                    BoardServiceExceptionInfo.ERROR_EXISTING_BOARD_IN_WORKSPACE
+                )
 
             payload = {"name": update_data.name.strip()}
             updated_board = await BoardRepository.update_board(board_id, payload)
             if not updated_board:
-                raise BoardServiceException(BoardServiceExceptionInfo.ERROR_UPDATING_BOARD)
+                raise BoardServiceException(
+                    BoardServiceExceptionInfo.ERROR_UPDATING_BOARD
+                )
 
             return BoardOutputSchema(**updated_board.__dict__)
 

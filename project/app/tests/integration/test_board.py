@@ -63,6 +63,19 @@ class TestBoard:
         assert response.status_code == 200
         test_app.board_1 = BoardOutputSchema(**response.json())
 
+    def test_create_board_2(self, test_app):
+        board_schema = BoardCreateSchema(**BoardCreate.__dict__)
+        board_schema.name = "Board 2"
+        response = test_app.do_request_with_role(
+            "USER_1",
+            "POST",
+            ApiServices.APP_BOARD,
+            data=board_schema.model_dump(),
+        )
+
+        assert response.status_code == 200
+        test_app.board_2 = BoardOutputSchema(**response.json())
+
     def test_get_all_board_paginated_with_board(self, test_app):
         response = test_app.do_request_with_role(
             "USER_1",
@@ -134,3 +147,27 @@ class TestBoard:
             ApiServices.APP_BOARD_GET_MEMBERS.format(board_id=test_app.board_1.id),
         )
         assert response.status_code == 200
+
+    def test_delete_board_none_owner(self, test_app):
+        response = test_app.do_request_with_role(
+            "USER_2",
+            "DELETE",
+            ApiServices.APP_BOARD_REMOVE.format(board_id=test_app.board_2.id),
+        )
+        assert response.status_code == 403
+
+    def test_delete_board_success(self, test_app):
+        response = test_app.do_request_with_role(
+            "USER_1",
+            "DELETE",
+            ApiServices.APP_BOARD_REMOVE.format(board_id=test_app.board_2.id),
+        )
+        assert response.status_code == 200
+
+    def test_delete_board_none_exist(self, test_app):
+        response = test_app.do_request_with_role(
+            "USER_1",
+            "DELETE",
+            ApiServices.APP_BOARD_REMOVE.format(board_id=test_app.board_2.id),
+        )
+        assert response.status_code == 404
