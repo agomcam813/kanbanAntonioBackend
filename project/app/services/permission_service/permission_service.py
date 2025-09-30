@@ -48,39 +48,25 @@ class PermissionService:
 
     @staticmethod
     async def validate_user_board_access(user_email: str, board_id: int) -> None:
-        """
-        Validates that a user has access to a specific board through:
-        1. Workspace membership AND
-        2. Board membership OR board ownership
-
-        Args:
-            user_email: Email of the user to validate
-            board_id: ID of the board to validate access to
-
-        Raises:
-            PermissionServiceException: If user doesn't have access to board
-        """
         user = await UserService.get_user_by_email_model(user_email)
 
-        # Get board to find its workspace
         board = await BoardRepository.get_board_by_identifier(board_id)
         if not board:
             raise PermissionServiceException(
                 PermissionServiceExceptionInfo.ERROR_BOARD_NOT_FOUND
             )
 
-        # First validate user has access to the board's workspace
-        await PermissionService.validate_user_workspace_access(
-            user_email, board.workspace_id
-        )
+        is_owner = board.owner_id == user.id
 
-        # Then validate user is either board owner or board member
-        is_board_owner = board.owner_id == user.id
         is_board_member = await BoardRepository.is_board_member(board_id, user.id)
 
-        if not (is_board_owner or is_board_member):
+        is_workspace_member = await WorkspaceRepository.check_user_contain_workspace(
+            {"workspace_id": board.workspace_id, "user_id": user.id}
+        )
+
+        if not (is_owner or is_board_member or is_workspace_member):
             raise PermissionServiceException(
-                PermissionServiceExceptionInfo.ERROR_USER_NOT_IN_WORKSPACE
+                PermissionServiceExceptionInfo.ERROR_USER_NOT_IN_BOARD
             )
 
     @staticmethod
