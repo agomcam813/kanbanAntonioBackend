@@ -70,7 +70,6 @@ class AuthService:
             access_token=response.session.access_token if response.session else "",
             refresh_token=response.session.refresh_token if response.session else "",
             user_id=user.id,
-            email=user.email,
         )
 
     @staticmethod
@@ -103,7 +102,6 @@ class AuthService:
             access_token=response.session.access_token,
             refresh_token=response.session.refresh_token,
             user_id=user.id,
-            email=user.email,
         )
 
     @staticmethod
@@ -139,7 +137,7 @@ class AuthService:
         )
 
     @staticmethod
-    async def logout(data: LogoutSchema, user_id: int, user_agent: str = None):
+    async def logout(data: LogoutSchema, user_id: int):
         """
         Delete the session associated with the given refresh token.
         """

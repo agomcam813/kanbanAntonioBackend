@@ -77,7 +77,7 @@ async def refresh(data: RefreshSchema, token_data=Depends(decode_token)):
 
 @router.post("/logout")
 async def logout(
-    data: LogoutSchema, request: Request, token_data=Depends(decode_token)
+    data: LogoutSchema, token_data=Depends(decode_token)
 ):
     """
     Log out a user and invalidate their current session.
@@ -92,10 +92,9 @@ async def logout(
     Returns:
     - Success message or status indicating the logout was successful
     """
-    user_agent = request.headers.get("user-agent")
     user_email = token_data.payload.get("email")
     user = await UserService.get_user_by_email(user_email)
-    return await AuthService.logout(data, user.id, user_agent)
+    return await AuthService.logout(data, user.id)
 
 
 @router.post("/forgot-password")
